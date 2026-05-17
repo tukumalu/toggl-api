@@ -335,6 +335,10 @@ label {
   color: var(--text-muted);
 }
 
+.metric-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
 /* ─── Charts ─── */
 
 .chart-grid {
@@ -844,38 +848,195 @@ label {
 
   .main-content {
     margin-left: 0;
-    padding: 1rem;
-    padding-top: 4rem;
+    padding: 0.75rem;
+    padding-top: 3.5rem;
   }
 
+  h1 {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  h3 {
+    font-size: 0.9rem;
+  }
+
+  /* Filter bar: horizontal row with wrapping, compact buttons */
+  .filter-bar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0.6rem;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .filter-bar button {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.7rem;
+    flex: none;
+  }
+
+  .filter-bar select {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.7rem;
+    min-width: 70px;
+  }
+
+  /* Metric cards: compact 2-column grid */
   .metric-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    margin: 0.75rem 0;
   }
 
+  .metric-card {
+    padding: 0.6rem 0.4rem;
+  }
+
+  .metric-card .value {
+    font-size: 1.3rem;
+  }
+
+  .metric-card .label {
+    font-size: 0.6rem;
+    letter-spacing: 0.5px;
+  }
+
+  /* Charts: single column, reduced height */
   .chart-grid {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin: 0.75rem 0;
   }
 
+  .chart-card {
+    padding: 0.6rem;
+  }
+
+  .chart-card h3 {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Quick action buttons: 3-col compact grid */
   .quick-actions {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.35rem;
+    margin-bottom: 1rem;
   }
 
-  .filter-bar {
-    flex-direction: column;
-    align-items: stretch;
+  .quick-actions button {
+    font-size: 0.65rem;
+    padding: 0.4rem 0.3rem;
+    margin: 0;
+  }
+
+  /* Tables: smaller text */
+  .data-table th,
+  .data-table td {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .data-table th {
+    font-size: 0.65rem;
+  }
+
+  /* Section dividers: tighter */
+  .section-divider {
+    margin: 1rem 0;
+  }
+
+  /* Chat */
+  .chat-message {
+    padding: 0.6rem;
+    font-size: 0.8rem;
+    max-width: 90%;
+  }
+
+  .chat-form input {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .chat-form button {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  /* Homepage cards */
+  .highlight-card {
+    padding: 8px 12px;
+  }
+
+  .highlight-card .card-description {
+    font-size: 0.85rem;
+  }
+
+  .highlight-card .card-meta {
+    font-size: 0.7rem;
+  }
+
+  .day-header {
+    font-size: 0.85rem;
+    margin: 1rem 0 0.4rem;
+  }
+
+  .week-range {
+    font-size: 0.75rem;
+  }
+
+  /* Expandable sections */
+  .expandable-header {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .expandable-content {
+    padding: 0.6rem;
   }
 
   .tabs {
     flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .tab {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+  }
+
+  /* Login page mobile */
+  .login-title {
+    font-size: 1.8rem;
+  }
+
+  .login-tagline {
+    font-size: 0.75rem;
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 380px) {
+  .main-content {
+    padding: 0.5rem;
+    padding-top: 3.5rem;
+  }
+
   .metric-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
+  }
+
+  .metric-card .value {
+    font-size: 1.1rem;
   }
 
   .quick-actions {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filter-bar button {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.5rem;
   }
 }
