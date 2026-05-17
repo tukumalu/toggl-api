@@ -349,17 +349,34 @@ export const supabase = {
           } else if (fn === 'get_on_this_day') {
             const month = params.target_month
             const day = params.target_day
-            const monthStr = String(month).padStart(2, '0')
-            const dayStr = String(day).padStart(2, '0')
-            const matching = mockEntries.filter(e => e.start_date.substring(5) === `${monthStr}-${dayStr}`)
-            const byYear: Record<number, { hours: number; count: number }> = {}
+            // Match entries within ±7 days of the target month-day in any year
+            const targetDoy = month * 31 + day // rough day-of-year for proximity
+            const matching = mockEntries.filter(e => {
+              const eMonth = parseInt(e.start_date.substring(5, 7))
+              const eDay = parseInt(e.start_date.substring(8, 10))
+              const eDoy = eMonth * 31 + eDay
+              return Math.abs(eDoy - targetDoy) <= 7
+            })
+            const byYear: Record<number, { hours: number; count: number; entries: typeof mockEntries }> = {}
             for (const e of matching) {
               const yr = parseInt(e.start_date.substring(0, 4))
-              if (!byYear[yr]) byYear[yr] = { hours: 0, count: 0 }
+              if (!byYear[yr]) byYear[yr] = { hours: 0, count: 0, entries: [] }
               byYear[yr].hours += e.duration_hours
               byYear[yr].count += 1
+              byYear[yr].entries.push(e)
             }
-            data = Object.entries(byYear).map(([year, v]) => ({ year: parseInt(year), hours: v.hours, entries: v.count }))
+            data = Object.entries(byYear).map(([year, v]) => ({
+              year: parseInt(year),
+              hours: v.hours,
+              entries: v.count,
+              details: v.entries.map(e => ({
+                start: e.start,
+                description: e.description,
+                project_name: e.project_name,
+                duration_hours: e.duration_hours,
+                tags: e.tags,
+              }))
+            })).sort((a, b) => b.year - a.year)
           } else if (fn === 'get_available_years') {
             const years = [...new Set(mockEntries.map(e => parseInt(e.start_date.substring(0, 4))))].sort((a, b) => b - a)
             data = years.map(year => ({ year }))

@@ -78,13 +78,33 @@ export async function fetchTaskBreakdown(mode: ViewMode, year: number | null, ra
   return data.map((d: any) => ({ taskName: d.task_name, hours: d.hours, entries: d.entries }))
 }
 
-export async function fetchOnThisDay(month: number, day: number): Promise<Array<{ year: number; hours: number; entries: number }>> {
+export interface OnThisDayEntry {
+  start: string
+  description: string
+  project_name: string
+  duration_hours: number
+  tags: string[]
+}
+
+export interface OnThisDayYear {
+  year: number
+  hours: number
+  entries: number
+  details: OnThisDayEntry[]
+}
+
+export async function fetchOnThisDay(month: number, day: number): Promise<OnThisDayYear[]> {
   const { data, error } = await supabase.rpc('get_on_this_day', {
     target_month: month,
     target_day: day
   })
   if (error) throw error
-  return data.map((d: any) => ({ year: d.year, hours: d.hours, entries: d.entries }))
+  return data.map((d: any) => ({
+    year: d.year,
+    hours: d.hours,
+    entries: d.entries,
+    details: d.details || [],
+  }))
 }
 
 export async function fetchWeekAcrossYears(isoWeek: number): Promise<Array<{ year: number; hours: number; entries: number }>> {
