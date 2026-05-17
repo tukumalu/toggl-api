@@ -94,17 +94,42 @@ export interface OnThisDayYear {
 }
 
 export async function fetchOnThisDay(month: number, day: number): Promise<OnThisDayYear[]> {
-  const { data, error } = await supabase.rpc('get_on_this_day', {
-    target_month: month,
-    target_day: day
-  })
+  // Query time_entries directly (like Streamlit does) to get full entry details
+  const { data, error } = await supabase
+    .from('time_entries')
+    .select('start,description,project_name,duration_hours,tags,start_year,start_month,start_day')
+    .eq('start_month', month)
+    .eq('start_day', day)
+    .order('start_year', { ascending: false })
+    .order('start', { ascending: true })
   if (error) throw error
-  return data.map((d: any) => ({
-    year: d.year,
-    hours: d.hours,
-    entries: d.entries,
-    details: d.details || [],
-  }))
+  if (!data || data.length === 0) return []
+
+  // Group by year client-side
+  const byYear: Record<number, { hours: number; count: number; entries: any[] }> = {}
+  for (const row of data) {
+    const yr = row.start_year
+    if (!byYear[yr]) byYear[yr] = { hours: 0, count: 0, entries: [] }
+    byYear[yr].hours += row.duration_hours
+    byYear[yr].count += 1
+    const tags = typeof row.tags === 'string' ? JSON.parse(row.tags) : (row.tags || [])
+    byYear[yr].entries.push({
+      start: row.start,
+      description: row.description || '',
+      project_name: row.project_name || '',
+      duration_hours: row.duration_hours,
+      tags,
+    })
+  }
+
+  return Object.entries(byYear)
+    .map(([year, v]) => ({
+      year: parseInt(year),
+      hours: v.hours,
+      entries: v.count,
+      details: v.entries,
+    }))
+    .sort((a, b) => b.year - a.year)
 }
 
 export async function fetchWeekAcrossYears(isoWeek: number): Promise<Array<{ year: number; hours: number; entries: number }>> {

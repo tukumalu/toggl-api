@@ -32,7 +32,7 @@ if (isDemoMode) {
   console.log('Running in demo mode - using mock data')
 }
 
-type MockEntry = {
+type RawMockEntry = {
   id: number
   description: string
   project_name: string
@@ -43,7 +43,14 @@ type MockEntry = {
   tags: string[]
 }
 
-type FilterOperator = 'contains' | 'gte' | 'lte'
+type MockEntry = RawMockEntry & {
+  start_year: number
+  start_month: number
+  start_day: number
+  start_week: number
+}
+
+type FilterOperator = 'eq' | 'contains' | 'gte' | 'lte'
 
 type Filter = {
   field: keyof MockEntry
@@ -74,9 +81,9 @@ function fmtISO(d: Date, hour: number): string {
   return `${fmtDate(d)}T${String(hour).padStart(2, '0')}:00:00Z`
 }
 
-function buildCurrentWeekHighlights(): MockEntry[] {
+function buildCurrentWeekHighlights(): RawMockEntry[] {
   const mon = getCurrentWeekMonday()
-  const entries: MockEntry[] = []
+  const entries: RawMockEntry[] = []
   const highlights = [
     { desc: 'Morning meditation & journaling', project: 'Health', dur: 0.75, day: 0, hour: 6, tags: ['Highlight', 'Exercise'] },
     { desc: 'Weekly sprint planning', project: 'Work', dur: 1.5, day: 0, hour: 9, tags: ['Highlight', 'Meeting'] },
@@ -102,7 +109,7 @@ function buildCurrentWeekHighlights(): MockEntry[] {
   return entries
 }
 
-const staticEntries: MockEntry[] = [
+const staticEntries: RawMockEntry[] = [
   // --- 2023 ---
   { id: 1, description: 'Quarterly OKR planning', project_name: 'Work', client_name: 'Acme Corp', start_date: '2023-01-09', start: '2023-01-09T09:00:00Z', duration_hours: 2.0, tags: ['Meeting'] },
   { id: 2, description: 'React migration spike', project_name: 'Agentic', client_name: '', start_date: '2023-01-12', start: '2023-01-12T10:00:00Z', duration_hours: 4.0, tags: ['Deep Work'] },
@@ -230,7 +237,18 @@ const staticEntries: MockEntry[] = [
   { id: 133, description: 'Weekend hike — river trail', project_name: 'Leisure', client_name: '', start_date: '2024-11-16', start: '2024-11-16T08:00:00Z', duration_hours: 4.0, tags: ['Exercise', 'Highlight'] },
 ]
 
-const mockEntries: MockEntry[] = [...staticEntries, ...buildCurrentWeekHighlights()]
+function enrichEntry(e: RawMockEntry): MockEntry {
+  const y = parseInt(e.start_date.substring(0, 4))
+  const m = parseInt(e.start_date.substring(5, 7))
+  const d = parseInt(e.start_date.substring(8, 10))
+  const dt = new Date(e.start_date + 'T00:00:00')
+  const jan4 = new Date(y, 0, 4)
+  const doy = Math.floor((dt.getTime() - new Date(y, 0, 1).getTime()) / 86400000) + 1
+  const wk = Math.ceil((doy + jan4.getDay()) / 7)
+  return { ...e, start_year: y, start_month: m, start_day: d, start_week: wk }
+}
+
+const mockEntries: MockEntry[] = [...staticEntries, ...buildCurrentWeekHighlights()].map(enrichEntry)
 
 function filterByYear(entries: MockEntry[], year: number) {
   return entries.filter((entry) => entry.start.startsWith(String(year)))
@@ -240,6 +258,10 @@ function applyFilters(entries: MockEntry[], filters: Filter[]) {
   return filters.reduce((result, filter) => {
     return result.filter((entry) => {
       const candidate = entry[filter.field]
+
+      if (filter.operator === 'eq') {
+        return String(candidate) === String(filter.value)
+      }
 
       if (filter.operator === 'contains') {
         if (!Array.isArray(candidate) || !Array.isArray(filter.value)) {
@@ -291,6 +313,7 @@ function resolveMockRows(filters: Filter[], orderSpec: OrderSpec) {
 
 function createMockQuery(filters: Filter[] = [], orderSpec: OrderSpec = null) {
   const baseQuery = {
+    eq: (field: keyof MockEntry, value: string | number) => createMockQuery([...filters, { field, operator: 'eq', value: String(value) }], orderSpec),
     contains: (field: keyof MockEntry, value: string[]) => createMockQuery([...filters, { field, operator: 'contains', value }], orderSpec),
     gte: (field: keyof MockEntry, value: string) => createMockQuery([...filters, { field, operator: 'gte', value }], orderSpec),
     lte: (field: keyof MockEntry, value: string) => createMockQuery([...filters, { field, operator: 'lte', value }], orderSpec),
@@ -379,37 +402,6 @@ export const supabase = {
             data = Object.entries(grouped)
               .map(([tag_name, value]) => ({ tag_name, hours: value.hours, entries: value.entriesCount }))
               .sort((left, right) => right.hours - left.hours)
-          } else if (fn === 'get_on_this_day') {
-            const month = params.target_month
-            const day = params.target_day
-            const matching = mockEntries.filter(e => {
-              const eMonth = parseInt(e.start_date.substring(5, 7))
-              if (eMonth === month) return true
-              const eDay = parseInt(e.start_date.substring(8, 10))
-              const targetDoy = month * 31 + day
-              const eDoy = eMonth * 31 + eDay
-              return Math.abs(eDoy - targetDoy) <= 10
-            })
-            const byYear: Record<number, { hours: number; count: number; entries: typeof mockEntries }> = {}
-            for (const e of matching) {
-              const yr = parseInt(e.start_date.substring(0, 4))
-              if (!byYear[yr]) byYear[yr] = { hours: 0, count: 0, entries: [] }
-              byYear[yr].hours += e.duration_hours
-              byYear[yr].count += 1
-              byYear[yr].entries.push(e)
-            }
-            data = Object.entries(byYear).map(([year, v]) => ({
-              year: parseInt(year),
-              hours: v.hours,
-              entries: v.count,
-              details: v.entries.map(e => ({
-                start: e.start,
-                description: e.description,
-                project_name: e.project_name,
-                duration_hours: e.duration_hours,
-                tags: e.tags,
-              }))
-            })).sort((a, b) => b.year - a.year)
           } else if (fn === 'get_available_years') {
             const years = [...new Set(mockEntries.map(e => parseInt(e.start_date.substring(0, 4))))].sort((a, b) => b - a)
             data = years.map(year => ({ year }))
