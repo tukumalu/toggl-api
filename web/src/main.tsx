@@ -12,20 +12,11 @@ import './styles/theme.css'
 import { isRunningInDemoMode } from './lib/supabase'
 
 function DemoBanner() {
-  const isDemo = isRunningInDemoMode()
-  
-  if (!isDemo) return null
-  
+  if (!isRunningInDemoMode()) return null
+
   return (
-    <div style={{
-      background: 'linear-gradient(90deg, #ff00ff, #00ffcc)',
-      color: '#000',
-      padding: '8px 16px',
-      textAlign: 'center',
-      fontWeight: 'bold',
-      fontSize: '14px'
-    }}>
-      🔥 DEMO MODE — Running with mock data. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to connect to real backend.
+    <div className="demo-banner">
+      DEMO MODE — Running with mock data
     </div>
   )
 }

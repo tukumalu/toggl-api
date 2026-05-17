@@ -140,6 +140,17 @@ export async function fetchYearComparison(yearA: number, yearB: number): Promise
   return data.map((d: any) => ({ month: d.month, hoursA: d.hours_a, hoursB: d.hours_b }))
 }
 
+export async function fetchTopActivities(mode: ViewMode, year: number | null, range: DateRange | null): Promise<Array<{ description: string; entries: number; totalHours: number; avgHours: number }>> {
+  const { data, error } = await supabase.rpc('get_top_activities', {
+    view_mode: mode,
+    filter_year: year,
+    p_start_date: range?.startDate,
+    p_end_date: range?.endDate
+  })
+  if (error) throw error
+  return data.map((d: any) => ({ description: d.description, entries: d.entries, totalHours: d.total_hours, avgHours: d.avg_hours }))
+}
+
 export async function fetchTopDescriptions(mode: ViewMode, year: number | null, range: DateRange | null, projectName: string, limit?: number): Promise<Array<{ description: string; hours: number; entries: number }>> {
   const { data, error } = await supabase.rpc('get_top_descriptions', {
     view_mode: mode,

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { getProjectColor } from '../lib/colors'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 function formatLocalDate(date: Date): string {
@@ -9,11 +10,9 @@ function formatLocalDate(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
-function formatDisplayDate(dateStr: string): { day: string; date: string } {
+function formatDayHeader(dateStr: string): string {
   const date = new Date(dateStr + 'T00:00:00')
-  const day = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
-  const dateFull = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-  return { day, date: dateFull }
+  return date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
 }
 
 function formatTime(isoString: string): string {
@@ -28,7 +27,7 @@ function formatDuration(hours: number): string {
   return `${hours.toFixed(1)}h`
 }
 
-function getCurrentIsoWeekRange(): { monday: string; sunday: string; isoWeek: number; mondayDisplay: string; sundayDisplay: string } {
+function getCurrentIsoWeekRange() {
   const now = new Date()
   const weekday = now.getDay() === 0 ? 7 : now.getDay()
   const mondayDate = new Date(now)
@@ -41,15 +40,12 @@ function getCurrentIsoWeekRange(): { monday: string; sunday: string; isoWeek: nu
   const yearStart = new Date(thursday.getFullYear(), 0, 1)
   const isoWeek = Math.ceil((((thursday.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
 
-  const formatShort = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-  const formatFull = (d: Date) => d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-
   return {
     monday: formatLocalDate(mondayDate),
     sunday: formatLocalDate(sundayDate),
     isoWeek,
-    mondayDisplay: `${formatShort(mondayDate)}`,
-    sundayDisplay: `${formatFull(sundayDate)}`
+    mondayDisplay: mondayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    sundayDisplay: sundayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
   }
 }
 
@@ -57,15 +53,13 @@ export default function Homepage() {
   const [highlights, setHighlights] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
-  const [isoWeekLabel, setIsoWeekLabel] = useState<number | null>(null)
-  const [weekRange, setWeekRange] = useState<{ mondayDisplay: string; sundayDisplay: string } | null>(null)
+  const [weekInfo, setWeekInfo] = useState<{ isoWeek: number; mondayDisplay: string; sundayDisplay: string } | null>(null)
 
   useEffect(() => {
     async function load() {
       setLoading(true)
       const { monday, sunday, isoWeek, mondayDisplay, sundayDisplay } = getCurrentIsoWeekRange()
-      setIsoWeekLabel(isoWeek)
-      setWeekRange({ mondayDisplay, sundayDisplay })
+      setWeekInfo({ isoWeek, mondayDisplay, sundayDisplay })
 
       const { data, error } = await supabase
         .from('time_entries')
@@ -86,45 +80,59 @@ export default function Homepage() {
     load()
   }, [])
 
+  const groupedByDay: Record<string, any[]> = {}
+  for (const h of highlights) {
+    const key = h.start_date
+    if (!groupedByDay[key]) groupedByDay[key] = []
+    groupedByDay[key].push(h)
+  }
+  const sortedDays = Object.keys(groupedByDay).sort()
+
   return (
-    <div className="container">
-      <h1>Weekly Highlights</h1>
-      
-      {weekRange && (
+    <div>
+      <h1>This Week's Highlights</h1>
+
+      {weekInfo && (
         <p className="week-range">
-          Week <span>{isoWeekLabel}</span> — {weekRange.mondayDisplay} to {weekRange.sundayDisplay}
+          Week <span>{weekInfo.isoWeek}</span> &mdash; {weekInfo.mondayDisplay} to {weekInfo.sundayDisplay}
         </p>
       )}
-      
+
       {loading ? (
         <LoadingSpinner />
       ) : errorMessage ? (
         <p className="error-text">{errorMessage}</p>
       ) : highlights.length === 0 ? (
-        <p className="empty-state">No highlights found for this week.</p>
+        <p className="empty-state">No highlights logged this week yet.</p>
       ) : (
         <div>
-          {highlights.map(h => {
-            const { day } = formatDisplayDate(h.start_date)
-            const time = formatTime(h.start)
-            const duration = formatDuration(h.duration_hours)
-            
-            return (
-              <div key={h.id} className="entry-card">
-                <div className="header">
-                  <div>
-                    <span className="day-label">{day}</span>
-                    <span className="time-label"> — {time}</span>
+          {sortedDays.map(day => (
+            <div key={day}>
+              <h4 className="day-header">{formatDayHeader(day)}</h4>
+              {groupedByDay[day].map((h: any) => {
+                const accent = getProjectColor(h.project_name || '')
+                const time = formatTime(h.start)
+                const dur = formatDuration(h.duration_hours)
+                const project = h.project_name || ''
+                const metaParts = [project, dur, time].filter(Boolean)
+
+                return (
+                  <div
+                    key={h.id}
+                    className="highlight-card"
+                    style={{ borderLeft: `3px solid ${accent}` }}
+                  >
+                    <div className="card-description">
+                      {h.description || '(no description)'}
+                    </div>
+                    <div className="card-meta">
+                      {metaParts.join('  ·  ')}
+                    </div>
                   </div>
-                  <span className="duration">{duration}</span>
-                </div>
-                <div className="project-name">{h.project_name || 'No Project'}</div>
-                {h.description && (
-                  <div className="description"><strong>{h.description}</strong></div>
-                )}
-              </div>
-            )
-          })}
+                )
+              })}
+            </div>
+          ))}
         </div>
       )}
     </div>

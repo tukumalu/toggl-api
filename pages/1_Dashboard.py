@@ -69,12 +69,33 @@ unique_projects = df["project_name"].nunique()
 unique_days = df["start_date"].nunique()
 avg_hours_per_day = total_hours / unique_days if unique_days > 0 else 0
 
-col1, col2, col3, col4, col5 = st.columns(5)
-col1.metric("Total Hours", f"{total_hours:,.1f}")
-col2.metric("Entries", f"{total_entries:,}")
-col3.metric("Projects", str(unique_projects))
-col4.metric("Active Days", str(unique_days))
-col5.metric("Avg Hours/Day", f"{avg_hours_per_day:.1f}")
+metrics_data = [
+    ("Total Hours", f"{total_hours:,.1f}", "#00fff9"),
+    ("Entries", f"{total_entries:,}", "#ff00ff"),
+    ("Projects", str(unique_projects), "#39ff14"),
+    ("Active Days", str(unique_days), "#bc13fe"),
+    ("Avg Hours/Day", f"{avg_hours_per_day:.1f}", "#ffd700"),
+]
+
+cols = st.columns(5)
+for col, (label, value, accent) in zip(cols, metrics_data):
+    col.markdown(
+        f"""<div style="
+            background: linear-gradient(135deg, #12122a 0%, #1a1a3e 100%);
+            border: 1px solid {accent}33;
+            border-top: 2px solid {accent};
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 0 10px {accent}15, inset 0 0 20px #0a0a1a88;
+        ">
+            <div style="color: #7878a8; text-transform: uppercase; letter-spacing: 1px;
+                        font-size: 0.72rem; margin-bottom: 6px;">{label}</div>
+            <div style="color: {accent}; font-size: 1.8rem;
+                        text-shadow: 0 0 10px {accent}55;">{value}</div>
+        </div>""",
+        unsafe_allow_html=True,
+    )
 
 st.divider()
 

@@ -100,31 +100,44 @@ if highlights.empty:
     st.markdown("")
     st.info("No highlights logged this week yet.")
 else:
-    # Sort chronologically so the journal reads like a timeline
     highlights = highlights.sort_values("start", ascending=True)
 
+    PROJECT_COLORS = {
+        "Prenatal": "#ff00ff",
+        "Postnatal": "#ff00ff",
+        "Work": "#bc13fe",
+        "Home": "#00fff9",
+        "Leisure": "#39ff14",
+        "Health": "#ffd700",
+        "Agentic": "#ff9800",
+        "Intellect": "#00b4d8",
+        "Asset": "#e040fb",
+        "Kin": "#ff2079",
+    }
+
+    current_day = None
     for _, row in highlights.iterrows():
-        # Parse start datetime for display
         try:
             start_dt = datetime.fromisoformat(str(row["start"]).replace("Z", "+00:00"))
-            day_label = start_dt.strftime("%a, %b %d")      # e.g. "Mon, Feb 23"
-            time_label = start_dt.strftime("%H:%M")          # e.g. "09:15"
+            day_label = start_dt.strftime("%A, %b %d")
+            time_label = start_dt.strftime("%H:%M")
+            day_key = start_dt.strftime("%Y-%m-%d")
         except (ValueError, TypeError):
             day_label = str(row.get("start_date", ""))
             time_label = ""
+            day_key = day_label
+
+        if day_key != current_day:
+            current_day = day_key
+            st.markdown(f"#### {day_label}")
 
         description = row.get("description") or "(no description)"
         project = row.get("project_name") or ""
         hours = row.get("duration_hours", 0)
+        dur_str = f"{hours:.1f}h" if hours >= 1 else f"{int(hours * 60)}m"
 
-        # Format the duration as a readable string
-        if hours >= 1:
-            dur_str = f"{hours:.1f}h"
-        else:
-            dur_str = f"{int(hours * 60)}m"
-
-        # Build the metadata line: day . project . duration . time
-        meta_parts = [day_label]
+        accent = PROJECT_COLORS.get(project, "#00fff9")
+        meta_parts = []
         if project:
             meta_parts.append(project)
         meta_parts.append(dur_str)
@@ -132,7 +145,23 @@ else:
             meta_parts.append(time_label)
         meta_line = "  \u00b7  ".join(meta_parts)
 
-        # Render a card using a bordered container
-        with st.container(border=True):
-            st.markdown(f"**{description}**")
-            st.caption(meta_line)
+        st.markdown(
+            f"""<div style="
+                border-left: 3px solid {accent};
+                padding: 12px 16px;
+                margin-bottom: 8px;
+                background: linear-gradient(135deg, #12122a 0%, #1a1a3e 100%);
+                border-radius: 0 6px 6px 0;
+                border-top: 1px solid #2a2a5a;
+                border-right: 1px solid #2a2a5a;
+                border-bottom: 1px solid #2a2a5a;
+            ">
+                <div style="color: #e0e0ff; font-size: 0.95rem; font-weight: 600; margin-bottom: 4px;">
+                    {description}
+                </div>
+                <div style="color: #7878a8; font-size: 0.78rem; letter-spacing: 0.5px;">
+                    {meta_line}
+                </div>
+            </div>""",
+            unsafe_allow_html=True,
+        )

@@ -12,7 +12,7 @@ const quickQueries = [
   { label: 'Total stats', query: 'total stats' },
   { label: 'Top projects', query: 'top projects' },
   { label: 'Top tags', query: 'top tags' },
-  { label: 'Yesterday', query: 'yesterday' }
+  { label: 'Yesterday', query: 'yesterday' },
 ]
 
 export default function Chat() {
@@ -29,20 +29,20 @@ export default function Chat() {
     e?.preventDefault()
     const text = query || question
     if (!text.trim()) return
-    
+
     const userMessage: Message = { role: 'user', content: text }
     setMessages(prev => [...prev, userMessage])
     setQuestion('')
     setLoading(true)
-    
+
     try {
       const res = await askChat(text)
       const assistantMessage: Message = { role: 'assistant', content: res.answer }
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
-      const errorMessage: Message = { 
-        role: 'assistant', 
-        content: `Error: ${error instanceof Error ? error.message : 'Unable to get response.'}` 
+      const errorMessage: Message = {
+        role: 'assistant',
+        content: `Error: ${error instanceof Error ? error.message : 'Unable to get response.'}`
       }
       setMessages(prev => [...prev, errorMessage])
     } finally {
@@ -52,14 +52,44 @@ export default function Chat() {
   }
 
   return (
-    <div className="container">
-      <h1>Chat</h1>
-      
+    <div>
+      <h1>Chat with Your Time Data</h1>
+
+      {/* Quick action buttons — above the fold */}
+      <div className="quick-actions">
+        {quickQueries.map(q => (
+          <button
+            key={q.label}
+            onClick={() => handleSubmit(undefined, q.query)}
+            disabled={loading}
+          >
+            {q.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Collapsible help */}
+      <details className="chat-help" open={messages.length === 0}>
+        <summary>What can I ask?</summary>
+        <div className="help-content">
+          <p>
+            <strong>Time periods:</strong> "How was 2024?", "What did I do on March 15?", "This week", "Yesterday"
+          </p>
+          <p>
+            <strong>Projects &amp; Tags:</strong> "Top projects", "Top tags", type a project name (e.g. "Work"), "Tag Highlight"
+          </p>
+          <p>
+            <strong>Analysis:</strong> "Compare 2023 and 2024", "Total hours", "Search meditation"
+          </p>
+        </div>
+      </details>
+
+      {/* Chat history */}
       {messages.length > 0 && (
         <div className="chat-messages">
           {messages.map((msg, idx) => (
             <div key={idx} className={`chat-message ${msg.role}`}>
-              <p>{msg.content}</p>
+              <pre>{msg.content}</pre>
             </div>
           ))}
           {loading && (
@@ -73,30 +103,19 @@ export default function Chat() {
         </div>
       )}
 
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <input 
-          type="text" 
-          value={question} 
-          onChange={e => setQuestion(e.target.value)} 
-          placeholder="Ask a question..."
+      {/* Chat input */}
+      <form className="chat-form" onSubmit={(e) => handleSubmit(e)}>
+        <input
+          type="text"
+          value={question}
+          onChange={e => setQuestion(e.target.value)}
+          placeholder="Ask about your time data..."
           disabled={loading}
         />
         <button type="submit" disabled={loading || !question.trim()}>
           Send
         </button>
       </form>
-      
-      <div className="quick-actions">
-        {quickQueries.map(q => (
-          <button 
-            key={q.label}
-            onClick={() => handleSubmit(undefined, q.query)}
-            disabled={loading}
-          >
-            {q.label}
-          </button>
-        ))}
-      </div>
     </div>
   )
 }

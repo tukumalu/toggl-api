@@ -11,15 +11,18 @@ import {
   fetchDailyHours,
   fetchMonthlyHours,
   fetchTopDescriptions,
+  fetchTopActivities,
   OverviewMetrics,
   ViewMode,
   DateRange
 } from '../lib/api'
+import { METRIC_COLORS } from '../lib/colors'
 import MetricCard from '../components/MetricCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 import NeonPieChart from '../components/Charts/NeonPieChart'
 import NeonBarChart from '../components/Charts/NeonBarChart'
 import NeonLineChart from '../components/Charts/NeonLineChart'
+import NeonHeatmap from '../components/Charts/NeonHeatmap'
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true)
@@ -31,13 +34,14 @@ export default function Dashboard() {
   const [tasks, setTasks] = useState<any[]>([])
   const [dailyHours, setDailyHours] = useState<any[]>([])
   const [monthlyHours, setMonthlyHours] = useState<any[]>([])
+  const [activities, setActivities] = useState<any[]>([])
   const [availableYears, setAvailableYears] = useState<number[]>([])
-  
+
   const [mode, setMode] = useState<ViewMode>('single_year')
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear())
   const [startDate, setStartDate] = useState<Date | null>(null)
   const [endDate, setEndDate] = useState<Date | null>(null)
-  
+
   const [selectedProject, setSelectedProject] = useState<string | null>(null)
   const [projectDescriptions, setProjectDescriptions] = useState<any[]>([])
   const [projectExpanded, setProjectExpanded] = useState(false)
@@ -51,7 +55,7 @@ export default function Dashboard() {
           setSelectedYear(years[0])
         }
       } catch {
-        setAvailableYears([2026, 2025, 2024, 2023, 2022])
+        setAvailableYears([2026, 2025, 2024, 2023])
       }
     }
     void loadYears()
@@ -62,7 +66,7 @@ export default function Dashboard() {
       setLoading(true)
       try {
         setErrorMessage('')
-        
+
         let range: DateRange | null = null
         if (mode === 'custom_range' && startDate && endDate) {
           range = {
@@ -70,37 +74,28 @@ export default function Dashboard() {
             endDate: endDate.toISOString().split('T')[0]
           }
         }
-        
+
         const year = mode === 'single_year' ? selectedYear : null
-        
-        const m = await fetchOverview(mode, year, range)
+
+        const [m, p, t, c, ts, dh, mh, act] = await Promise.all([
+          fetchOverview(mode, year, range),
+          fetchProjectBreakdown(mode, year, range),
+          fetchTagBreakdown(mode, year, range),
+          fetchClientBreakdown(mode, year, range),
+          fetchTaskBreakdown(mode, year, range),
+          fetchDailyHours(mode, year, range).catch(() => []),
+          fetchMonthlyHours(mode, year, range).catch(() => []),
+          fetchTopActivities(mode, year, range).catch(() => []),
+        ])
+
         setMetrics(m)
-
-        const p = await fetchProjectBreakdown(mode, year, range)
-        setProjects(p.slice(0, 10))
-
-        const t = await fetchTagBreakdown(mode, year, range)
+        setProjects(p.slice(0, 15))
         setTags(t.slice(0, 10))
-
-        const c = await fetchClientBreakdown(mode, year, range)
         setClients(c.slice(0, 10))
-
-        const ts = await fetchTaskBreakdown(mode, year, range)
         setTasks(ts.slice(0, 10))
-
-        try {
-          const dh = await fetchDailyHours(mode, year, range)
-          setDailyHours(dh)
-        } catch {
-          setDailyHours([])
-        }
-
-        try {
-          const mh = await fetchMonthlyHours(mode, year, range)
-          setMonthlyHours(mh)
-        } catch {
-          setMonthlyHours([])
-        }
+        setDailyHours(dh)
+        setMonthlyHours(mh)
+        setActivities(act)
       } catch (error) {
         setErrorMessage(error instanceof Error ? error.message : 'Unable to load dashboard data.')
       } finally {
@@ -130,6 +125,12 @@ export default function Dashboard() {
     }
     void loadProjectDetails()
   }, [selectedProject, mode, selectedYear, startDate, endDate])
+
+  const titleSuffix = mode === 'single_year'
+    ? String(selectedYear)
+    : mode === 'all_time'
+      ? availableYears.length > 0 ? `${Math.min(...availableYears)}-${Math.max(...availableYears)}` : 'All Time'
+      : startDate && endDate ? `${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}` : 'Custom Range'
 
   const projectPieData = {
     labels: projects.map(p => p.projectName),
@@ -163,9 +164,13 @@ export default function Dashboard() {
 
   const selectedProjectData = projects.find(p => p.projectName === selectedProject)
 
+  // Heatmap data grouping by year
+  const heatmapData = dailyHours.map(d => ({ date: d.date, hours: d.hours }))
+  const heatmapYears = [...new Set(heatmapData.map(d => parseInt(d.date.substring(0, 4))))].sort((a, b) => b - a)
+
   if (loading) {
     return (
-      <div className="container">
+      <div>
         <h1>Dashboard</h1>
         <LoadingSpinner />
       </div>
@@ -173,25 +178,25 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container">
+    <div>
       <h1>Dashboard</h1>
-      
+
       <div className="filter-bar">
-        <button 
+        <button
           onClick={() => setMode('all_time')}
           className={mode === 'all_time' ? 'active' : ''}
         >
           All Time
         </button>
-        <button 
+        <button
           onClick={() => setMode('single_year')}
           className={mode === 'single_year' ? 'active' : ''}
         >
           Single Year
         </button>
         {mode === 'single_year' && (
-          <select 
-            value={selectedYear} 
+          <select
+            value={selectedYear}
             onChange={(e) => setSelectedYear(Number(e.target.value))}
           >
             {availableYears.map(year => (
@@ -199,7 +204,7 @@ export default function Dashboard() {
             ))}
           </select>
         )}
-        <button 
+        <button
           onClick={() => setMode('custom_range')}
           className={mode === 'custom_range' ? 'active' : ''}
         >
@@ -224,38 +229,38 @@ export default function Dashboard() {
       </div>
 
       {errorMessage && <p className="error-text">{errorMessage}</p>}
-      
+
+      <h3 style={{ marginBottom: '0.5rem' }}>Overview: {titleSuffix}</h3>
+
       {metrics && (
         <div className="metric-grid">
-          <MetricCard value={metrics.totalHours.toFixed(1)} label="Total Hours" />
-          <MetricCard value={metrics.totalEntries} label="Total Entries" />
-          <MetricCard value={metrics.uniqueProjects} label="Unique Projects" />
-          <MetricCard value={metrics.activeDays} label="Active Days" />
-          <MetricCard value={metrics.avgHoursPerDay.toFixed(1)} label="Avg Hours/Day" />
+          <MetricCard value={metrics.totalHours.toFixed(1)} label="Total Hours" accentColor={METRIC_COLORS.totalHours} />
+          <MetricCard value={metrics.totalEntries} label="Entries" accentColor={METRIC_COLORS.entries} />
+          <MetricCard value={metrics.uniqueProjects} label="Projects" accentColor={METRIC_COLORS.projects} />
+          <MetricCard value={metrics.activeDays} label="Active Days" accentColor={METRIC_COLORS.activeDays} />
+          <MetricCard value={metrics.avgHoursPerDay.toFixed(1)} label="Avg Hours/Day" accentColor={METRIC_COLORS.avgHoursPerDay} />
         </div>
       )}
 
-      {dailyHours.length > 0 && (
-        <div className="chart-card" style={{ marginBottom: '1.5rem' }}>
-          <h3>Daily Activity</h3>
-          <div style={{ overflowX: 'auto' }}>
-            <NeonLineChart 
-              data={dailyHours.map(d => ({ x: d.date, y: d.hours }))}
-              title=""
-              height={200}
-            />
-          </div>
-        </div>
-      )}
+      <hr className="section-divider" />
 
+      <h3>Time by Project</h3>
       <div className="chart-grid">
         <div className="chart-card">
-          <h3>Projects</h3>
+          <h3>Top Projects (proportion)</h3>
+          {projects.length > 0 ? (
+            <div style={{ overflowX: 'auto' }}>
+              <NeonPieChart data={projectPieData} title="" height={320} />
+            </div>
+          ) : (
+            <p className="empty-state">No project data</p>
+          )}
+        </div>
+
+        <div className="chart-card">
+          <h3>Top Projects (hours)</h3>
           {projects.length > 0 ? (
             <>
-              <div style={{ overflowX: 'auto' }}>
-                <NeonPieChart data={projectPieData} title="" height={280} />
-              </div>
               <div className="table-container">
                 <table className="data-table">
                   <thead>
@@ -266,11 +271,11 @@ export default function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {projects.slice(0, 5).map((p) => (
-                      <tr 
-                        key={p.projectName} 
+                    {projects.slice(0, 10).map((p) => (
+                      <tr
+                        key={p.projectName}
                         onClick={() => handleProjectClick(p.projectName)}
-                        style={{ cursor: 'pointer', background: selectedProject === p.projectName ? 'rgba(0,255,204,0.1)' : undefined }}
+                        style={{ cursor: 'pointer', background: selectedProject === p.projectName ? 'rgba(0,255,249,0.08)' : undefined }}
                       >
                         <td>{p.projectName}</td>
                         <td>{p.hours.toFixed(1)}</td>
@@ -285,23 +290,29 @@ export default function Dashboard() {
             <p className="empty-state">No project data</p>
           )}
         </div>
+      </div>
 
-        <div className="chart-card">
-          <h3>Tags</h3>
-          {tags.length > 0 ? (
-            <div style={{ overflowX: 'auto' }}>
-              <NeonBarChart data={tagBarData} title="" orientation="h" height={280} color="#ff00ff" />
-            </div>
-          ) : (
-            <p className="empty-state">No tag data</p>
-          )}
-        </div>
+      <hr className="section-divider" />
 
+      <h3>Time by Tag</h3>
+      <div className="chart-card">
+        {tags.length > 0 ? (
+          <div style={{ overflowX: 'auto' }}>
+            <NeonBarChart data={tagBarData} title="" orientation="h" height={300} color="#ff00ff" />
+          </div>
+        ) : (
+          <p className="empty-state">No tag data</p>
+        )}
+      </div>
+
+      <hr className="section-divider" />
+
+      <div className="chart-grid">
         <div className="chart-card">
           <h3>Clients</h3>
           {clients.length > 0 ? (
             <div style={{ overflowX: 'auto' }}>
-              <NeonBarChart data={clientBarData} title="" orientation="h" height={280} color="#ff6600" />
+              <NeonBarChart data={clientBarData} title="" orientation="h" height={280} color="#ff9800" />
             </div>
           ) : (
             <p className="empty-state">No client data</p>
@@ -312,42 +323,32 @@ export default function Dashboard() {
           <h3>Tasks</h3>
           {tasks.length > 0 ? (
             <div style={{ overflowX: 'auto' }}>
-              <NeonBarChart data={taskBarData} title="" orientation="h" height={280} color="#33ff99" />
+              <NeonBarChart data={taskBarData} title="" orientation="h" height={280} color="#39ff14" />
             </div>
           ) : (
             <p className="empty-state">No task data</p>
-          )}
-        </div>
-
-        <div className="chart-card">
-          <h3>Monthly Trend</h3>
-          {monthlyHours.length > 0 ? (
-            <div style={{ overflowX: 'auto' }}>
-              <NeonLineChart data={monthlyLineData} title="" height={280} showArea />
-            </div>
-          ) : (
-            <p className="empty-state">No monthly data</p>
           )}
         </div>
       </div>
 
       {selectedProject && selectedProjectData && (
         <div className="project-drilldown">
+          <hr className="section-divider" />
           <div className="expandable-section">
-            <div 
-              className="expandable-header" 
+            <div
+              className="expandable-header"
               onClick={() => setProjectExpanded(!projectExpanded)}
             >
-              <span>{selectedProject}</span>
+              <span>Project Detail: {selectedProject}</span>
               <span>{projectExpanded ? '▲' : '▼'}</span>
             </div>
             {projectExpanded && (
               <div className="expandable-content">
                 <div className="metric-grid" style={{ marginTop: 0 }}>
-                  <MetricCard value={selectedProjectData.hours.toFixed(1)} label="Hours" />
-                  <MetricCard value={selectedProjectData.entries} label="Entries" />
+                  <MetricCard value={selectedProjectData.hours.toFixed(1)} label="Hours" accentColor="#00fff9" />
+                  <MetricCard value={selectedProjectData.entries} label="Entries" accentColor="#ff00ff" />
                 </div>
-                
+
                 <h4>Top Descriptions</h4>
                 {projectDescriptions.length > 0 ? (
                   <div className="table-container">
@@ -377,6 +378,78 @@ export default function Dashboard() {
             )}
           </div>
         </div>
+      )}
+
+      <hr className="section-divider" />
+
+      <h3>Monthly Trend</h3>
+      <div className="chart-card">
+        {monthlyHours.length > 0 ? (
+          <div style={{ overflowX: 'auto' }}>
+            <NeonLineChart data={monthlyLineData} title="" height={300} showArea />
+          </div>
+        ) : (
+          <p className="empty-state">No monthly data</p>
+        )}
+      </div>
+
+      <hr className="section-divider" />
+
+      <h3>Daily Activity Heatmap</h3>
+      {heatmapData.length > 0 ? (
+        mode === 'single_year' ? (
+          <div className="chart-card">
+            <NeonHeatmap
+              data={heatmapData.filter(d => d.date.startsWith(String(selectedYear)))}
+              title={String(selectedYear)}
+              height={220}
+            />
+          </div>
+        ) : (
+          heatmapYears.map(yr => (
+            <div key={yr} className="chart-card" style={{ marginBottom: '1rem' }}>
+              <NeonHeatmap
+                data={heatmapData.filter(d => d.date.startsWith(String(yr)))}
+                title={String(yr)}
+                height={180}
+              />
+            </div>
+          ))
+        )
+      ) : (
+        <p className="empty-state">No daily data for heatmap</p>
+      )}
+
+      <hr className="section-divider" />
+
+      <h3>Most Common Activities</h3>
+      {activities.length > 0 ? (
+        <div className="chart-card">
+          <div className="table-container">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Entries</th>
+                  <th>Total Hours</th>
+                  <th>Avg Hours</th>
+                </tr>
+              </thead>
+              <tbody>
+                {activities.map((a, idx) => (
+                  <tr key={idx}>
+                    <td>{a.description}</td>
+                    <td>{a.entries}</td>
+                    <td>{a.totalHours.toFixed(1)}</td>
+                    <td>{a.avgHours.toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
+        <p className="empty-state">No activity data</p>
       )}
     </div>
   )

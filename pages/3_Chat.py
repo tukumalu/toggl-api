@@ -22,71 +22,9 @@ if not years:
     st.warning("No data available. Please run a sync from the home page.")
     st.stop()
 
-st.caption(f"Data available for: {min(years)}-{max(years)}")
-
 # ---------------------------------------------------------------------------
-# Chat state
+# Quick action buttons — above the fold, immediately actionable
 # ---------------------------------------------------------------------------
-
-if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {
-            "role": "assistant",
-            "content": (
-                "Hi! I can help you explore your Toggl time tracking history. "
-                "Here's what I can do:\n\n"
-                '**Time periods:**\n'
-                '- "How was 2024?" -- Year summary\n'
-                '- "What did I do on March 15?" -- Date across all years\n'
-                '- "In February 2024" -- Monthly summary\n'
-                '- "This week" / "Last week" -- Weekly view\n'
-                '- "Today" / "Yesterday" -- Today in history\n\n'
-                '**Projects & Tags:**\n'
-                '- "Top projects" / "Top projects in 2024" -- Project ranking\n'
-                '- "Top tags" -- Tag ranking\n'
-                '- Just type a project name (e.g. "Work", "Health") -- Project details\n'
-                '- "Tag Highlight" / "Tagged Deep in 2024" -- Tag details\n\n'
-                '**Analysis:**\n'
-                '- "Compare 2023 and 2024" -- Year comparison\n'
-                '- "Total hours" -- All-time stats\n'
-                '- "Search meditation" -- Keyword search across descriptions, projects & tags\n\n'
-                "What would you like to know?"
-            ),
-        }
-    ]
-
-# ---------------------------------------------------------------------------
-# Display chat history
-# ---------------------------------------------------------------------------
-
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-# ---------------------------------------------------------------------------
-# Chat input
-# ---------------------------------------------------------------------------
-
-if prompt := st.chat_input("Ask about your time data..."):
-    # Display user message
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    # Generate answer
-    with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
-            answer = answer_question(prompt)
-        st.markdown(answer)
-
-    st.session_state.messages.append({"role": "assistant", "content": answer})
-
-# ---------------------------------------------------------------------------
-# Quick action buttons
-# ---------------------------------------------------------------------------
-
-st.divider()
-st.markdown("**Quick queries:**")
 
 col1, col2, col3 = st.columns(3)
 col4, col5, col6 = st.columns(3)
@@ -102,7 +40,53 @@ quick_queries = [
 
 for col, label, query in quick_queries:
     if col.button(label, use_container_width=True):
+        if "messages" not in st.session_state:
+            st.session_state.messages = []
         st.session_state.messages.append({"role": "user", "content": query})
         answer = answer_question(query)
         st.session_state.messages.append({"role": "assistant", "content": answer})
         st.rerun()
+
+# ---------------------------------------------------------------------------
+# Chat state
+# ---------------------------------------------------------------------------
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# ---------------------------------------------------------------------------
+# Help reference — collapsed so it doesn't dominate
+# ---------------------------------------------------------------------------
+
+with st.expander("What can I ask?", expanded=len(st.session_state.messages) == 0):
+    st.markdown(
+        '**Time periods:** "How was 2024?", "What did I do on March 15?", '
+        '"This week", "Yesterday"\n\n'
+        '**Projects & Tags:** "Top projects", "Top tags", type a project name '
+        '(e.g. "Work"), "Tag Highlight"\n\n'
+        '**Analysis:** "Compare 2023 and 2024", "Total hours", "Search meditation"'
+    )
+
+# ---------------------------------------------------------------------------
+# Display chat history
+# ---------------------------------------------------------------------------
+
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# ---------------------------------------------------------------------------
+# Chat input
+# ---------------------------------------------------------------------------
+
+if prompt := st.chat_input("Ask about your time data..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+            answer = answer_question(prompt)
+        st.markdown(answer)
+
+    st.session_state.messages.append({"role": "assistant", "content": answer})

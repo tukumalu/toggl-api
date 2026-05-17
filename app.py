@@ -26,21 +26,83 @@ if not is_authenticated:
     st.markdown(
         """
         <style>
+            @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
             [data-testid="collapsedControl"] { display: none; }
             [data-testid="stSidebar"] { display: none; }
+            .stApp {
+                background: radial-gradient(ellipse at 20% 50%, #0d1b3e 0%, #0a0a1a 70%) !important;
+            }
+            .stApp::before {
+                content: "";
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: repeating-linear-gradient(
+                    0deg, transparent, transparent 2px,
+                    rgba(0, 255, 249, 0.015) 2px, rgba(0, 255, 249, 0.015) 4px
+                );
+                pointer-events: none;
+                z-index: 999;
+            }
+            .login-container {
+                max-width: 440px;
+                margin: 8vh auto 0;
+                text-align: center;
+                font-family: 'Share Tech Mono', monospace;
+            }
+            .login-title {
+                font-family: 'Share Tech Mono', monospace;
+                font-size: 2.4rem;
+                color: #00fff9;
+                text-shadow: 0 0 7px #00fff988, 0 0 20px #00fff944, 0 0 40px #00fff922;
+                letter-spacing: 3px;
+                margin-bottom: 4px;
+            }
+            .login-icon {
+                font-size: 3rem;
+                margin-bottom: 8px;
+                filter: drop-shadow(0 0 12px #00fff966);
+            }
+            .login-tagline {
+                color: #7878a8;
+                font-family: 'Share Tech Mono', monospace;
+                font-size: 0.85rem;
+                letter-spacing: 1.5px;
+                margin-bottom: 32px;
+            }
+            .login-divider {
+                width: 60px;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, #00fff966, transparent);
+                margin: 16px auto 28px;
+            }
         </style>
         """,
         unsafe_allow_html=True,
     )
-    st.title("Login Required")
-    with st.form("login_form"):
-        pwd = st.text_input("Password", type="password")
-        if st.form_submit_button("Login"):
-            if pwd == os.getenv("DASHBOARD_PASSWORD", "290391"):
-                st.session_state["authenticated"] = True
-                st.rerun()
-            else:
-                st.error("Incorrect password")
+
+    st.markdown(
+        """
+        <div class="login-container">
+            <div class="login-icon">⏱️</div>
+            <div class="login-title">TIME JOURNAL</div>
+            <div class="login-divider"></div>
+            <div class="login-tagline">YOUR TOGGL DATA · VISUALIZED</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    col_l, col_form, col_r = st.columns([1.2, 1.6, 1.2])
+    with col_form:
+        with st.form("login_form"):
+            pwd = st.text_input("Password", type="password", label_visibility="collapsed",
+                                placeholder="Enter password")
+            if st.form_submit_button("→  Access Dashboard", use_container_width=True):
+                if pwd == os.getenv("DASHBOARD_PASSWORD", "290391"):
+                    st.session_state["authenticated"] = True
+                    st.rerun()
+                else:
+                    st.error("Incorrect password")
     st.stop()
 
 

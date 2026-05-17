@@ -29,6 +29,11 @@ export default function LoginPage() {
     setSubmitting(true)
     setError('')
 
+    if (isDemoMode) {
+      navigate(destination, { replace: true })
+      return
+    }
+
     const result = await signInWithPassword(email, password)
 
     if (result.error) {
@@ -41,41 +46,42 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container auth-card">
-      <p className="eyebrow">Private Beta Access</p>
-      <h1>Sign in to the live dashboard</h1>
-      <p>
-        Demo mode stays public for previews. Real Supabase-backed access uses your authenticated session.
-      </p>
-      {isDemoMode && (
-        <p className="helper-copy">
-          Demo mode is active, so this screen will be skipped once real frontend env vars are configured.
-        </p>
-      )}
-      <form className="auth-form" onSubmit={(event) => void handleSubmit(event)}>
-        <label>
-          Email
-          <input
-            autoComplete="email"
-            onChange={(event) => setEmail(event.target.value)}
-            type="email"
-            value={email}
-          />
-        </label>
-        <label>
-          Password
-          <input
-            autoComplete="current-password"
-            onChange={(event) => setPassword(event.target.value)}
-            type="password"
-            value={password}
-          />
-        </label>
-        <button disabled={submitting} type="submit">
-          {submitting ? 'Signing in...' : 'Sign in'}
-        </button>
-      </form>
-      {error && <p className="error-text">{error}</p>}
+    <div className="login-page">
+      <div className="login-container">
+        <div className="login-icon">{'⏱️'}</div>
+        <div className="login-title">TIME JOURNAL</div>
+        <div className="login-divider" />
+        <div className="login-tagline">YOUR TOGGL DATA &middot; VISUALIZED</div>
+
+        {isDemoMode ? (
+          <div className="login-form">
+            <button onClick={() => navigate(destination, { replace: true })}>
+              {'→'} Access Dashboard
+            </button>
+          </div>
+        ) : (
+          <form className="login-form" onSubmit={(event) => void handleSubmit(event)}>
+            <input
+              autoComplete="email"
+              onChange={(event) => setEmail(event.target.value)}
+              type="email"
+              value={email}
+              placeholder="Email"
+            />
+            <input
+              autoComplete="current-password"
+              onChange={(event) => setPassword(event.target.value)}
+              type="password"
+              value={password}
+              placeholder="Password"
+            />
+            <button disabled={submitting} type="submit">
+              {submitting ? 'Signing in...' : '→ Access Dashboard'}
+            </button>
+          </form>
+        )}
+        {error && <p className="error-text" style={{ marginTop: '1rem' }}>{error}</p>}
+      </div>
     </div>
   )
 }
