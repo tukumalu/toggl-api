@@ -176,6 +176,21 @@ const staticEntries: MockEntry[] = [
   { id: 66, description: 'Weekend woodworking', project_name: 'Leisure', client_name: '', start_date: '2025-04-26', start: '2025-04-26T10:00:00Z', duration_hours: 4.0, tags: ['Highlight'] },
   { id: 67, description: 'Mentorship session', project_name: 'Work', client_name: 'Acme Corp', start_date: '2025-05-05', start: '2025-05-05T11:00:00Z', duration_hours: 1.0, tags: ['Meeting'] },
   { id: 68, description: 'Garden maintenance', project_name: 'Home', client_name: '', start_date: '2025-05-11', start: '2025-05-11T09:00:00Z', duration_hours: 2.0, tags: ['Admin'] },
+  { id: 100, description: 'Write blog post draft', project_name: 'Intellect', client_name: '', start_date: '2025-05-17', start: '2025-05-17T14:00:00Z', duration_hours: 2.0, tags: ['Deep Work'] },
+  { id: 101, description: 'Evening yoga', project_name: 'Health', client_name: '', start_date: '2025-05-17', start: '2025-05-17T18:00:00Z', duration_hours: 1.0, tags: ['Exercise'] },
+  { id: 102, description: 'Data pipeline review', project_name: 'Work', client_name: 'Acme Corp', start_date: '2025-06-02', start: '2025-06-02T10:00:00Z', duration_hours: 2.5, tags: ['Deep Work'] },
+  { id: 103, description: 'Bike ride — 20K', project_name: 'Health', client_name: '', start_date: '2025-06-14', start: '2025-06-14T07:00:00Z', duration_hours: 1.5, tags: ['Exercise'] },
+  { id: 104, description: 'LLM fine-tuning experiment', project_name: 'Agentic', client_name: '', start_date: '2025-06-22', start: '2025-06-22T09:00:00Z', duration_hours: 4.0, tags: ['Deep Work', 'Highlight'] },
+  { id: 105, description: 'Quarterly planning', project_name: 'Work', client_name: 'Acme Corp', start_date: '2025-07-07', start: '2025-07-07T13:00:00Z', duration_hours: 2.0, tags: ['Meeting'] },
+  { id: 106, description: 'Museum visit', project_name: 'Leisure', client_name: '', start_date: '2025-07-19', start: '2025-07-19T11:00:00Z', duration_hours: 3.0, tags: ['Highlight'] },
+  { id: 107, description: 'Open source contribution', project_name: 'Agentic', client_name: '', start_date: '2025-08-04', start: '2025-08-04T10:00:00Z', duration_hours: 3.0, tags: ['Deep Work'] },
+  { id: 108, description: 'Family BBQ', project_name: 'Kin', client_name: '', start_date: '2025-08-16', start: '2025-08-16T12:00:00Z', duration_hours: 4.0, tags: ['Highlight'] },
+  { id: 109, description: 'Sprint retro', project_name: 'Work', client_name: 'Acme Corp', start_date: '2025-09-01', start: '2025-09-01T15:00:00Z', duration_hours: 1.0, tags: ['Meeting'] },
+  { id: 110, description: 'Rock climbing session', project_name: 'Health', client_name: '', start_date: '2025-09-13', start: '2025-09-13T08:00:00Z', duration_hours: 2.0, tags: ['Exercise', 'Highlight'] },
+  { id: 111, description: 'Podcast listening walk', project_name: 'Intellect', client_name: '', start_date: '2025-10-05', start: '2025-10-05T07:00:00Z', duration_hours: 1.0, tags: ['Reading'] },
+  { id: 112, description: 'Refactor notification system', project_name: 'Work', client_name: 'Acme Corp', start_date: '2025-10-20', start: '2025-10-20T10:00:00Z', duration_hours: 3.5, tags: ['Deep Work'] },
+  { id: 113, description: 'Thanksgiving prep', project_name: 'Home', client_name: '', start_date: '2025-11-22', start: '2025-11-22T09:00:00Z', duration_hours: 3.0, tags: ['Admin', 'Highlight'] },
+  { id: 114, description: 'Year-end reflection', project_name: 'Intellect', client_name: '', start_date: '2025-12-28', start: '2025-12-28T20:00:00Z', duration_hours: 1.5, tags: ['Deep Work'] },
 
   // --- 2026 ---
   { id: 69, description: 'Q1 kickoff meeting', project_name: 'Work', client_name: 'Acme Corp', start_date: '2026-01-05', start: '2026-01-05T09:00:00Z', duration_hours: 2.5, tags: ['Meeting'] },
@@ -195,6 +210,24 @@ const staticEntries: MockEntry[] = [
   { id: 83, description: 'Cycling — 30K ride', project_name: 'Health', client_name: '', start_date: '2026-05-03', start: '2026-05-03T07:00:00Z', duration_hours: 1.5, tags: ['Exercise'] },
   { id: 84, description: 'Dashboard feature parity push', project_name: 'Agentic', client_name: '', start_date: '2026-05-10', start: '2026-05-10T09:00:00Z', duration_hours: 4.0, tags: ['Deep Work', 'Highlight'] },
   { id: 85, description: 'Apartment spring cleaning', project_name: 'Home', client_name: '', start_date: '2026-05-11', start: '2026-05-11T10:00:00Z', duration_hours: 3.0, tags: ['Admin'] },
+  { id: 86, description: 'Retrospect feature dev', project_name: 'Agentic', client_name: '', start_date: '2026-05-17', start: '2026-05-17T09:00:00Z', duration_hours: 3.5, tags: ['Deep Work', 'Highlight'] },
+  { id: 87, description: 'Afternoon jog', project_name: 'Health', client_name: '', start_date: '2026-05-17', start: '2026-05-17T17:00:00Z', duration_hours: 0.75, tags: ['Exercise'] },
+
+  // --- Extra mid-month entries for richer retrospect ---
+  { id: 120, description: 'Strategy brainstorm', project_name: 'Work', client_name: 'Acme Corp', start_date: '2023-01-16', start: '2023-01-16T14:00:00Z', duration_hours: 1.5, tags: ['Meeting'] },
+  { id: 121, description: 'Cooking new recipe', project_name: 'Home', client_name: '', start_date: '2023-03-15', start: '2023-03-15T18:00:00Z', duration_hours: 1.5, tags: ['Highlight'] },
+  { id: 122, description: 'Morning meditation', project_name: 'Health', client_name: '', start_date: '2023-05-17', start: '2023-05-17T06:00:00Z', duration_hours: 0.5, tags: ['Exercise'] },
+  { id: 123, description: 'Product roadmap update', project_name: 'Work', client_name: 'Acme Corp', start_date: '2023-05-17', start: '2023-05-17T10:00:00Z', duration_hours: 2.0, tags: ['Meeting', 'Deep Work'] },
+  { id: 124, description: 'Evening reading session', project_name: 'Intellect', client_name: '', start_date: '2023-07-17', start: '2023-07-17T20:00:00Z', duration_hours: 1.0, tags: ['Reading'] },
+  { id: 125, description: 'Family video call', project_name: 'Kin', client_name: '', start_date: '2023-09-16', start: '2023-09-16T19:00:00Z', duration_hours: 1.0, tags: ['Highlight'] },
+  { id: 126, description: 'Portfolio rebalance check', project_name: 'Asset', client_name: '', start_date: '2023-11-17', start: '2023-11-17T10:00:00Z', duration_hours: 1.0, tags: ['Admin'] },
+  { id: 127, description: 'Architecture decision doc', project_name: 'Work', client_name: 'Acme Corp', start_date: '2024-01-17', start: '2024-01-17T11:00:00Z', duration_hours: 2.5, tags: ['Deep Work'] },
+  { id: 128, description: 'Gym — HIIT session', project_name: 'Health', client_name: '', start_date: '2024-03-17', start: '2024-03-17T06:30:00Z', duration_hours: 1.0, tags: ['Exercise'] },
+  { id: 129, description: 'ML model evaluation', project_name: 'Agentic', client_name: '', start_date: '2024-05-17', start: '2024-05-17T10:00:00Z', duration_hours: 3.0, tags: ['Deep Work'] },
+  { id: 130, description: 'Book club — "Sapiens"', project_name: 'Intellect', client_name: '', start_date: '2024-05-17', start: '2024-05-17T19:00:00Z', duration_hours: 1.5, tags: ['Reading', 'Highlight'] },
+  { id: 131, description: 'Backyard project planning', project_name: 'Home', client_name: '', start_date: '2024-07-17', start: '2024-07-17T09:00:00Z', duration_hours: 2.0, tags: ['Admin'] },
+  { id: 132, description: 'Sprint planning', project_name: 'Work', client_name: 'Acme Corp', start_date: '2024-09-17', start: '2024-09-17T09:00:00Z', duration_hours: 1.5, tags: ['Meeting'] },
+  { id: 133, description: 'Weekend hike — river trail', project_name: 'Leisure', client_name: '', start_date: '2024-11-16', start: '2024-11-16T08:00:00Z', duration_hours: 4.0, tags: ['Exercise', 'Highlight'] },
 ]
 
 const mockEntries: MockEntry[] = [...staticEntries, ...buildCurrentWeekHighlights()]
@@ -349,13 +382,13 @@ export const supabase = {
           } else if (fn === 'get_on_this_day') {
             const month = params.target_month
             const day = params.target_day
-            // Match entries within ±7 days of the target month-day in any year
-            const targetDoy = month * 31 + day // rough day-of-year for proximity
             const matching = mockEntries.filter(e => {
               const eMonth = parseInt(e.start_date.substring(5, 7))
+              if (eMonth === month) return true
               const eDay = parseInt(e.start_date.substring(8, 10))
+              const targetDoy = month * 31 + day
               const eDoy = eMonth * 31 + eDay
-              return Math.abs(eDoy - targetDoy) <= 7
+              return Math.abs(eDoy - targetDoy) <= 10
             })
             const byYear: Record<number, { hours: number; count: number; entries: typeof mockEntries }> = {}
             for (const e of matching) {

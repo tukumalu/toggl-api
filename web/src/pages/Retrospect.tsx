@@ -29,6 +29,11 @@ function formatTime(isoString: string): string {
   return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
 }
 
+function formatEntryDate(isoString: string): string {
+  const d = new Date(isoString)
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
 export default function Retrospect() {
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
@@ -36,7 +41,7 @@ export default function Retrospect() {
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [history, setHistory] = useState<OnThisDayYear[]>([])
-  const [expandedYear, setExpandedYear] = useState<number | null>(null)
+  const [collapsedYears, setCollapsedYears] = useState<Set<number>>(new Set())
 
   const [isoWeek, setIsoWeek] = useState<number>(getCurrentIsoWeek())
   const [weekData, setWeekData] = useState<any[]>([])
@@ -69,9 +74,7 @@ export default function Retrospect() {
         setErrorMessage('')
         const data = await fetchOnThisDay(selectedDate.getMonth() + 1, selectedDate.getDate())
         setHistory(data)
-        if (data.length > 0) {
-          setExpandedYear(data[0].year)
-        }
+        setCollapsedYears(new Set())
       } catch (error) {
         setErrorMessage(error instanceof Error ? error.message : 'Unable to load data.')
       } finally {
@@ -123,6 +126,15 @@ export default function Retrospect() {
     return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })
   }
 
+  const toggleYear = (year: number) => {
+    setCollapsedYears(prev => {
+      const next = new Set(prev)
+      if (next.has(year)) next.delete(year)
+      else next.add(year)
+      return next
+    })
+  }
+
   const totalHistoryHours = history.reduce((s, h) => s + h.hours, 0)
   const totalHistoryEntries = history.reduce((s, h) => s + h.entries, 0)
 
@@ -164,7 +176,7 @@ export default function Retrospect() {
           className={`tab ${activeTab === 'year-comparison' ? 'active' : ''}`}
           onClick={() => setActiveTab('year-comparison')}
         >
-          Year Comparison
+          Year vs Year
         </button>
       </div>
 
@@ -175,91 +187,80 @@ export default function Retrospect() {
       ) : activeTab === 'on-this-day' ? (
         <>
           <div className="filter-bar">
-            <label style={{ margin: 0 }}>Pick a date:</label>
+            <label style={{ margin: 0 }}>Date:</label>
             <DatePicker
               selected={selectedDate}
               onChange={(date: Date | null) => date && setSelectedDate(date)}
-              dateFormat="yyyy-MM-dd"
+              dateFormat="MMM d"
               className="date-input"
             />
           </div>
 
-          <h2>On This Day ({formatDateDisplay(selectedDate)})</h2>
-
           {history.length === 0 ? (
-            <p className="empty-state">No entries found for {formatDateDisplay(selectedDate)} in any year.</p>
+            <p className="empty-state">No entries found near {formatDateDisplay(selectedDate)} in any year.</p>
           ) : (
             <>
-              {/* Summary metrics */}
-              <div className="metric-grid" style={{ marginBottom: '1rem' }}>
+              <div className="metric-grid">
                 <MetricCard value={totalHistoryHours.toFixed(1)} label="Total Hours" accentColor={METRIC_COLORS.totalHours} />
                 <MetricCard value={totalHistoryEntries} label="Entries" accentColor={METRIC_COLORS.entries} />
-                <MetricCard value={history.length} label="Years Active" accentColor={METRIC_COLORS.projects} />
+                <MetricCard value={history.length} label="Years" accentColor={METRIC_COLORS.projects} />
+                <MetricCard
+                  value={(totalHistoryHours / history.length).toFixed(1)}
+                  label="Avg / Year"
+                  accentColor={METRIC_COLORS.avgHoursPerDay}
+                />
               </div>
 
-              {/* Bar chart: hours by year */}
               <div className="chart-card" style={{ marginBottom: '1.5rem' }}>
                 <NeonBarChart
                   data={{
                     x: history.map(h => String(h.year)),
                     y: history.map(h => h.hours),
                   }}
-                  title={`Hours on ${formatDateDisplay(selectedDate)} by Year`}
-                  height={Math.max(200, history.length * 60)}
+                  title={`Hours near ${formatDateDisplay(selectedDate)} by Year`}
+                  height={Math.max(200, history.length * 55)}
                   color="#00fff9"
                 />
               </div>
 
-              {/* Per-year expandable details */}
-              {history.map(yearData => (
-                <div key={yearData.year} className="expandable-section" style={{ marginBottom: '0.5rem' }}>
-                  <div
-                    className="expandable-header"
-                    onClick={() => setExpandedYear(expandedYear === yearData.year ? null : yearData.year)}
-                  >
-                    <span>
-                      <strong>{yearData.year}</strong>
-                      <span style={{ color: 'var(--text-muted)', marginLeft: '1rem' }}>
-                        {yearData.hours.toFixed(1)}h &middot; {yearData.entries} entries
-                      </span>
-                    </span>
-                    <span>{expandedYear === yearData.year ? '▲' : '▼'}</span>
-                  </div>
-                  {expandedYear === yearData.year && yearData.details && yearData.details.length > 0 && (
-                    <div className="expandable-content">
-                      <div className="table-container">
-                        <table className="data-table">
-                          <thead>
-                            <tr>
-                              <th>Time</th>
-                              <th>Description</th>
-                              <th>Project</th>
-                              <th>Hours</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {yearData.details.map((entry, idx) => (
-                              <tr key={idx}>
-                                <td>{formatTime(entry.start)}</td>
-                                <td>{entry.description}</td>
-                                <td style={{ color: getProjectColor(entry.project_name) }}>
-                                  {entry.project_name}
-                                </td>
-                                <td>{entry.duration_hours.toFixed(1)}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+              {history.map(yearData => {
+                const isCollapsed = collapsedYears.has(yearData.year)
+                return (
+                  <div key={yearData.year} className="retro-year-section">
+                    <div
+                      className="retro-year-header"
+                      onClick={() => toggleYear(yearData.year)}
+                    >
+                      <div className="retro-year-title">
+                        <span className="retro-year-label">{yearData.year}</span>
+                        <span className="retro-year-stats">
+                          {yearData.hours.toFixed(1)}h &middot; {yearData.entries} entries
+                        </span>
                       </div>
-                      {yearData.details.some(e => e.tags.length > 0) && (
-                        <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                          Tags: {[...new Set(yearData.details.flatMap(e => e.tags))].join(', ')}
-                        </div>
-                      )}
+                      <span className="retro-toggle">{isCollapsed ? '▼' : '▲'}</span>
                     </div>
-                  )}
-                </div>
-              ))}
+                    {!isCollapsed && yearData.details && yearData.details.length > 0 && (
+                      <div className="retro-entries">
+                        {yearData.details.map((entry, idx) => (
+                          <div key={idx} className="retro-entry" style={{ borderLeftColor: getProjectColor(entry.project_name) }}>
+                            <div className="retro-entry-top">
+                              <span className="retro-entry-desc">{entry.description}</span>
+                              <span className="retro-entry-hours">{entry.duration_hours.toFixed(1)}h</span>
+                            </div>
+                            <div className="retro-entry-meta">
+                              <span style={{ color: getProjectColor(entry.project_name) }}>{entry.project_name}</span>
+                              <span>{formatEntryDate(entry.start)} {formatTime(entry.start)}</span>
+                              {entry.tags.length > 0 && (
+                                <span className="retro-entry-tags">{entry.tags.join(', ')}</span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </>
           )}
         </>
