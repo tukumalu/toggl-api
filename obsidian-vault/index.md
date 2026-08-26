@@ -1,0 +1,233 @@
+---
+title: "Index"
+---
+
+# Index
+
+## Domains (26)
+- [[Agentic]] — 342 h
+- [[Alternate Income]] — 26 h
+- [[Assessment Tools]] — 80 h
+- [[Asset]] — 280 h
+- [[Carbon Trust]] — 71 h
+- [[CompSus]] — 316 h
+- [[Development]] — 527 h
+- [[Driving]] — 230 h
+- [[General EAM]] — 31 h
+- [[Green Infrastructure]] — 85 h
+- [[Green Supply Chain]] — 24 h
+- [[Health]] — 3,129 h
+- [[Housing]] — 1,185 h
+- [[Intellect]] — 1,486 h
+- [[Land-Water Management]] — 220 h
+- [[Leisure]] — 3,451 h
+- [[Net Zero Target]] — 50 h
+- [[PhD Migration]] — 22 h
+- [[Postnatal]] — 133 h
+- [[Prenatal]] — 740 h
+- [[Project Management]] — 1,306 h
+- [[STEM Education]] — 68 h
+- [[Wealth]] — 2,532 h
+- [[Wedding]] — 765 h
+- [[Work]] — 8,593 h
+- [[YPP Program]] — 116 h
+
+## Persons (2)
+- [[Kin]] — 3,674 h
+- [[Linh]] — 6,524 h
+
+## Years (10)
+- [[2017]] — 3,341 h
+- [[2018]] — 5,856 h
+- [[2019]] — 6,411 h
+- [[2020]] — 6,470 h
+- [[2021]] — 6,353 h
+- [[2022]] — 6,300 h
+- [[2023]] — 6,188 h
+- [[2024]] — 6,265 h
+- [[2025]] — 6,401 h
+- [[2026]] — 2,396 h
+
+## Concepts (10)
+- [[Career Moves]] — 457 h
+- [[Deep]] — 149 h
+- [[Education Arc]] — 951 h
+- [[Family Life]] — 16,352 h
+- [[Games]] — 3,527 h
+- [[Grind]] — 29 h
+- [[Highlight]] — 7,278 h
+- [[Parenthood]] — 4,547 h
+- [[Self Care]] — 3,626 h
+- [[Sustainability Work]] — 1,048 h
+
+## Activitys (170)
+- [[ADB LRP]] — 17 h
+- [[ADB SEP]] — 31 h
+- [[ADB Solar]] — 22 h
+- [[Away day]] — 48 h
+- [[BC proposal]] — 18 h
+- [[Be bi talk]] — 23 h
+- [[Blog]] — 14 h
+- [[Blog and website]] — 11 h
+- [[Blue Whale document review]] — 15 h
+- [[Book]] — 40 h
+- [[BP survey]] — 100 h
+- [[Breakfast]] — 12 h
+- [[Call]] — 79 h
+- [[Career Path]] — 15 h
+- [[Chess]] — 77 h
+- [[Chevening]] — 22 h
+- [[Chevening interview]] — 59 h
+- [[Chevening Interview]] — 18 h
+- [[Chinese]] — 16 h
+- [[Cleared emails]] — 7 h
+- [[Commute]] — 16 h
+- [[Computational Sustainability]] — 16 h
+- [[Con Dao Away Day]] — 46 h
+- [[Crypto]] — 14 h
+- [[CVX baseline]] — 24 h
+- [[CVX EIA]] — 63 h
+- [[CVX ESHIA]] — 20 h
+- [[CVX social]] — 189 h
+- [[Daily Exercise]] — 3 h
+- [[Daily Plan]] — 8 h
+- [[Dam Study]] — 19 h
+- [[Digest]] — 74 h
+- [[Digest Journal]] — 15 h
+- [[Dinner]] — 61 h
+- [[Environment]] — 30 h
+- [[ERM Review]] — 12 h
+- [[Errand]] — 63 h
+- [[ESG]] — 14 h
+- [[ESG Bill]] — 17 h
+- [[Essay]] — 37 h
+- [[Exercise]] — 55 h
+- [[Exercise & Hygiene]] — 12 h
+- [[Expense]] — 30 h
+- [[Exxon Comment]] — 26 h
+- [[Exxon Schedule]] — 15 h
+- [[Exxon Social]] — 12 h
+- [[Exxon Translation]] — 24 h
+- [[Family Debt]] — 59 h
+- [[Fire Emblem]] — 42 h
+- [[First consulting task]] — 16 h
+- [[Flight]] — 37 h
+- [[Foresight]] — 13 h
+- [[Fulbright]] — 35 h
+- [[FV comment]] — 15 h
+- [[FV Social Risk]] — 89 h
+- [[Good nap]] — 17 h
+- [[Good sleep]] — 16 h
+- [[GRE]] — 31 h
+- [[Habitica]] — 81 h
+- [[Halcom Proposal]] — 17 h
+- [[Holiday]] — 79 h
+- [[Holiday 30-4]] — 69 h
+- [[Hong Phong line]] — 17 h
+- [[Hong Phong LRF]] — 18 h
+- [[Hong Phong Translation]] — 13 h
+- [[HP social]] — 23 h
+- [[HP Transmission]] — 16 h
+- [[HT site]] — 34 h
+- [[Huong Linh format]] — 14 h
+- [[Hygiene]] — 55 h
+- [[Hygiene Exercise]] — 14 h
+- [[IAP Meeting]] — 46 h
+- [[IELTS]] — 97 h
+- [[IELTS Prepare]] — 64 h
+- [[IELTS Teach]] — 42 h
+- [[Imperial app]] — 36 h
+- [[Job]] — 95 h
+- [[Long Son LSP]] — 25 h
+- [[LSP baseline]] — 24 h
+- [[LSP trip]] — 75 h
+- [[Lunch]] — 191 h
+- [[Misc]] — 93 h
+- [[MOBA]] — 19 h
+- [[Mong Duong 2 Comment]] — 21 h
+- [[Mong Duong Data Input]] — 15 h
+- [[Mong Duong LRAC]] — 139 h
+- [[Mong Duong Report]] — 51 h
+- [[Morning]] — 34 h
+- [[Morning coord]] — 14 h
+- [[MS survey]] — 123 h
+- [[MS wet survey]] — 65 h
+- [[Nap]] — 53 h
+- [[ND Site]] — 107 h
+- [[New Job]] — 164 h
+- [[News]] — 61 h
+- [[Nghi Son document]] — 23 h
+- [[Non PIED release]] — 12 h
+- [[NZ app]] — 54 h
+- [[PC scoping]] — 50 h
+- [[People]] — 9 h
+- [[People Profile]] — 10 h
+- [[Plan]] — 22 h
+- [[Planning for the day]] — 27 h
+- [[Proposal]] — 37 h
+- [[Pursuit]] — 24 h
+- [[Quick nap]] — 12 h
+- [[R Data]] — 40 h
+- [[Real Time]] — 113 h
+- [[Recovery sleep]] — 44 h
+- [[Rest]] — 386 h
+- [[Review]] — 58 h
+- [[Ride & Math]] — 16 h
+- [[Ride Math]] — 13 h
+- [[RMIT]] — 623 h
+- [[SCG proposal]] — 15 h
+- [[Schedule]] — 41 h
+- [[Scholarship]] — 145 h
+- [[Sembcorp proposal]] — 31 h
+- [[Soccer]] — 14 h
+- [[Solar Hong Phong Baseline]] — 20 h
+- [[Solar Hong Phong Data Input]] — 16 h
+- [[Solar Hong Phong SEP]] — 27 h
+- [[Solar Hong Phong Visit]] — 83 h
+- [[ST ESDD]] — 85 h
+- [[Stock]] — 16 h
+- [[Tam Hai holiday]] — 73 h
+- [[Tet]] — 247 h
+- [[Thailand]] — 119 h
+- [[THC proposal]] — 37 h
+- [[Think]] — 58 h
+- [[Timesheet]] — 41 h
+- [[Tra Vinh Data]] — 13 h
+- [[Tra Vinh Site]] — 60 h
+- [[Tra Vinh Social]] — 40 h
+- [[TV bat survey]] — 81 h
+- [[TV logistics]] — 18 h
+- [[UK Essay]] — 13 h
+- [[UK predeparture]] — 49 h
+- [[Van Phong Survey]] — 44 h
+- [[VAPCO monitor]] — 76 h
+- [[VAPCO monitor 2]] — 32 h
+- [[VF chancefind]] — 14 h
+- [[VF MPs]] — 27 h
+- [[Viet Wedding and Be bi relax]] — 36 h
+- [[VINFAST summary]] — 21 h
+- [[Vinh Tan ESDD]] — 9 h
+- [[Vocal]] — 44 h
+- [[Voice]] — 18 h
+- [[VP Baseline]] — 20 h
+- [[VP baseline]] — 20 h
+- [[VP ESHIA]] — 22 h
+- [[VP final]] — 26 h
+- [[VP Land]] — 24 h
+- [[VP land]] — 13 h
+- [[VP LRP]] — 81 h
+- [[Vung Ang Errand]] — 47 h
+- [[Vung Ang site visit]] — 153 h
+- [[Vung Ang Socioecon Report]] — 55 h
+- [[Vung Tau]] — 83 h
+- [[Vung Tau Weekend]] — 41 h
+- [[Weekend]] — 796 h
+- [[Weekend Date]] — 75 h
+- [[Weekly Review]] — 24 h
+- [[Weekly review and planning]] — 7 h
+- [[WWF]] — 135 h
+- [[WWF Bank Engagement]] — 11 h
+- [[WWF Bill]] — 54 h
+- [[WWF Energy Seminar]] — 22 h
+- [[WWF Mapping]] — 44 h
+- [[WWF seminar]] — 13 h
