@@ -1,0 +1,50 @@
+[
+  {
+    "e": 0.58,
+    "title": "Your wedding is the only thing in nine years that broke you.",
+    "body": "You logged 1,719 consecutive days without missing one — 4 Oct 2017 to 18 Jun 2022. The streak ends on your wedding day, a single 57-hour entry. Then three blank days: 19 Jun, 10 Jul, 24 Jul 2022. Those are the last unlogged days of your life. You have tracked every day for 1,392 days since. In 3,424 days you have missed 26, and 23 of them were in 2017.",
+    "nodes": ["y:2022", "d:Wedding", "d:Linh", "t:wifey"]
+  },
+  {
+    "e": 0.95,
+    "title": "The decade took 2.6 hours of your sleep. The baby took 18 minutes.",
+    "body": "Median overnight gap between your last entry and your first the next morning: 8.9 h in 2017, 7.8 h in 2018, 6.8 h in 2019, and 6.25 h so far in 2026 — a slide of 2 h 38 m that never once reversed. After 8 May 2026 it fell to 5.95 h. The newborn is responsible for 18 minutes of it. The other 2 h 20 m you gave away yourself, one year at a time, and 2020 is unreadable because that year you tracked straight through the night.",
+    "nodes": ["t:sleep", "y:2017", "y:2026", "t:baby"]
+  },
+  {
+    "e": 0.72,
+    "title": "You stopped exercising and started watching yourself instead.",
+    "body": "Days with exercise logged: 193 in 2018, 72 in 2021, 13 in 2024, <span class=\"fig\">5 in all of 2025</span>. Days with a stool logged over the same span: 49 → 149 → 148 → <span class=\"fig\">198</span>. The two lines crossed in 2021 and never uncrossed. In 2025 you recorded your bowels on 54% of days and your body in motion on 1.4% of them. 1,033 stool entries, 696 hours, every year since 2017 — it is the single most faithful ritual in the database.",
+    "nodes": ["t:stool", "t:exercise", "d:Health", "y:2025"]
+  },
+  {
+    "e": 0.88,
+    "title": "The good moments didn't get rarer. They got shorter.",
+    "body": "You still tag roughly the same number of Highlights a year — 1,039 in 2022, 745 in 2025, 413 in the first half of 2026. But the average tagged moment has shrunk every single year: <span class=\"fig\">2.41 h → 2.24 → 1.93 → 1.50 → 0.92 h</span>. A moment worth marking used to be an afternoon. It is now under an hour. Your capacity for delight is intact; the container holding it lost 62% of its volume.",
+    "nodes": ["y:2022", "y:2026", "d:Leisure", "d:Kin"]
+  },
+  {
+    "e": 1.0,
+    "title": "2026 is the most shattered year you have ever lived.",
+    "body": "Project switches per day: 3.6 in 2017, 8.2 in 2023, <span class=\"fig\">16.2 in 2026</span> — higher than 2020, your previous record. Sessions longer than two hours were 17% of your entries in 2023; they are 8% now. Your median session dropped from 45.6 minutes back to 34.3. You are not doing less. You are doing it in twice as many pieces.",
+    "nodes": ["y:2026", "y:2023", "d:Agentic", "d:Postnatal"]
+  },
+  {
+    "e": 0.3,
+    "title": "Six things ended and none of them got a last day.",
+    "body": "RMIT: 1,204 entries, 668 hours, then nothing after 25 Aug 2022. IELTS: 275 entries, last seen 17 Dec 2022. Survey work: 477 hours, last 12 Mar 2024. Mong Duong, Exxon, ESDD — each a few hundred hours, each with a final entry that reads like any other Tuesday. Nothing in this database is ever marked as finished. Whole identities just stop appearing.",
+    "nodes": ["t:rmit", "t:ielts", "t:survey", "y:2017"]
+  },
+  {
+    "e": 0.65,
+    "title": "You are fighting at your 2022 rate again.",
+    "body": "Days whose entries mention a fight or an argument, as a share of tracked days: 4% in 2020, 6% in 2021, <span class=\"fig\">12.2% in 2022</span> — your wedding year — then 7% in 2023 and 9% in 2024. So far in 2026: 17 days out of 137, or <span class=\"fig\">12.4%</span>. You have quietly returned to the worst rate on record, and this time it is not a wedding.",
+    "nodes": ["t:fight", "y:2026", "y:2022", "d:Home"]
+  },
+  {
+    "e": 0.85,
+    "title": "Somewhere in 2020 the log turned into a diary.",
+    "body": "Median characters per entry: 7 in 2017 ('RMIT', 'Nap', 'Expense'), 23 in 2020, and <span class=\"fig\">37 in 2026</span> — five times longer, and the longest you have ever written. Distinct descriptions per year went from 382 to nearly 6,000. As your days fragmented, your notes got wordier: you stopped recording what you did and started explaining it to someone. This graph is built out of that explaining.",
+    "nodes": ["y:2020", "y:2026", "d:Unfiled", "t:talk"]
+  }
+]

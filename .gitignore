@@ -19,3 +19,6 @@ web/dist/
 web/.env.local
 web/tmp/
 web/*.tsbuildinfo
+
+# gauntlet intermediates (blind A/B crops, large screenshots)
+analysis/blind/
