@@ -1,5 +1,32 @@
 # Active Context
 
+Date: 2026-09-01
+Project: Toggl Time Journal
+Task: Analytics on the freshly exported month (data/TogglTrack_Report_Detailed_report_(from_08_02_2026_to_09_06_2026).csv) - trend, change, foresight, actions.
+
+## Plan
+- [x] Merge new CSV (Aug 2 - Sep 1, 485 entries) with the 2026 YTD CSV; dedupe (2 overlaps) -> 4,499 entries, 244/244 days covered
+- [x] Last-30 vs prior-30 vs 2026 YTD vs 9-year August baseline
+- [x] Project / tag / time-of-day / fragmentation shifts
+- [x] Sleep proxy: tracked-hours-per-day and longest untracked block per day
+- [x] Trend fits on last 10 weeks + bounded forecast
+- [x] Publish report artifact with charts
+- [x] Published: https://claude.ai/code/artifact/c86a9077-9b4e-4841-99d1-6f20d022bb96
+- [ ] Optional follow-up: incremental-sync the DB (stale since 2026-05-17) so the graph/vault match the CSV
+
+## Review / Results
+- Merged dataset: 4,499 entries, 2026-01-01 -> 2026-09-01, 244/244 days, 2 duplicate rows dropped.
+- Headline: Aug = 606.2 h / 19.6 h per day, the highest August in the 10-year log (2018-25 band: 17.0-17.9).
+- Postnatal peaked at 92 h in W31 (week of 27 Jul) and fell to 37 h by W35; slope -9.4 h/wk over the last 6 weeks.
+- Sleep proxy (24 h minus logged): 6.3-6.8 h/day Jan-May -> 3.6 in Jul -> 4.4 in Aug; longest unbroken gap under 4 h on 55% of Aug days (Jul 61%, Jan-May 0-6%).
+- Deep-tagged hours recovered 2.1 -> 21.2 h/wk across Aug; Work steady at ~29 h/wk.
+- Signals: wife PPD time 0.7 -> 4.0 -> 15.5 h/month (May/Jul/Aug); nanny churn 41-44 h in W31-32 then collapse; layoff/pay-cut risk 3.4 h on 5-6 Aug then silence.
+- Charts hand-built as inline SVG; palette validated with the dataviz validator (5 slots, PASS light + dark); rendered and eyeballed headless in both themes.
+
+---
+
+# Previous task (archived)
+
 Date: 2026-08-31
 Project: Toggl Time Journal
 Task: Gauntlet loop — HTML artifact visualizing 2017–2026 of my life as an Obsidian-style graph, carrying insights I could NOT have written myself.
